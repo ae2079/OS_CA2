@@ -49,12 +49,15 @@ void count_and_convert_to_csv(vector<pair<string ,int>> out_map, char* out_str){
     }
     for(int i = 0; i < keys.size(); i++){
         if(out.find(keys[i]) == out.end()){
+            //cout << "key == " << keys[i] << endl;
             int value = values[i];
             for(int j = i; j < keys.size(); j++){
                 if(keys[j] == keys[i]){
+                    //cout << keys[i] << endl;
                     value += values[j];
                 }
             }
+            //cout << "key = " << keys[i] << "    value = " << value << endl; 
             out.insert(pair<string, int>(keys[i], value));
         }
     }
@@ -65,29 +68,42 @@ int main(int argc, char* argv[]){
     /* close the unused end of the pipe */
     close(atoi(argv[0]));
 
-    string out;
-    stringstream maps_out(out);
-    //char out[OUTPUT_SIZE];
+    //string out;
+    //stringstream maps_out(out);
+    char out[OUTPUT_SIZE];
     int num_of_maps = atoi(argv[3]);
     mkfifo(argv[2], 0666);
+    sleep(0.5);
     int fd = open(argv[2], O_RDONLY);
     for(int i = 0; i < num_of_maps; i++){
         char temp[OUTPUT_SIZE];
-        read(fd, temp, OUTPUT_SIZE);
-        cout << temp << endl;
-        maps_out << temp;
+        while(read(fd, temp, OUTPUT_SIZE)<=0);
+        //cout << temp << endl;
+        strcat(out, temp);
+        //maps_out << temp;
         //sleep(1);
     }
     close(fd);
     //////////////
-    cout << out << endl;
+    //cout << out << endl;
     /////////
 
     vector<pair<string ,int>> out_map = split_str(out);
 
+    //////////
+    // map<string, int>::iterator itr;
+    // for (itr = out_map.begin(); itr != out_map.end(); itr++) {
+    //     cout << '\t' << itr->first << " : " << itr->second << '\n';
+    // }
+    // cout << endl;
+    //////////////
+
     char output[OUTPUT_SIZE];
     count_and_convert_to_csv(out_map, output);
 
+    ///////////////
+    //cout << output << endl;
+    ////////////////
     /* write to the pipe */
     write(atoi(argv[1]), output, strlen(output)+1);
     /* close the write end of the pipe */

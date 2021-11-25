@@ -59,6 +59,9 @@ int main() {
             return -1;
         }
         else if (temp == 0) { /* child process */
+            ///
+            sleep(i);
+            ////
             char read_end[BUFFER_SIZE];
             sprintf(read_end, "%d", fd[READ_END]);
             char write_end[BUFFER_SIZE];
@@ -74,6 +77,7 @@ int main() {
             write(fd[WRITE_END], file, strlen(file)+1);
             /* close the write end of the pipe */
             close(fd[WRITE_END]);
+            //sleep(NULL);
         }
     }
 
