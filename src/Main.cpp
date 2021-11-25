@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <stdio.h>
-//#include <string>
-//#include <unistd.h>
+#include <string>
+#include <unistd.h>
 #include <vector>
 #include <dirent.h>
 
@@ -20,14 +20,14 @@ int get_num_of_files(){
 
     if (dir != NULL)
     {
-        while (ep = readdir (dir))
+        while(ep = readdir (dir))
         num++;
-        closedir (dir);
+        closedir(dir);
     }
     else
-        perror ("Couldn't open the directory");
+        perror("Couldn't open the directory");
 
-    return num;
+    return num - 2;
 }
 
 int main() {
@@ -38,6 +38,19 @@ int main() {
     /* create the pipe */
     int num_of_files = get_num_of_files();
 
+    vector<pid_t> pid;
+    for(int i = 0; i < num_of_files; i++){
+        pid_t temp = fork();
+        if (temp < 0) { /* error occurred */
+            perror("Fork Failed");
+            return -1;
+        }
+        else if (temp == 0) { /* child process */
+            char file[20];
+            sprintf(file, "%s/%d.csv", TEST_CASE_DIR,i+1);
+            execlp ("./map.out", file, NULL);
+        }
+    }
     // if ( pipe (fd) == -1) {
     //     fprintf(stderr,"Pipe failed");
     //     return 1;
