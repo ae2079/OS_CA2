@@ -1,10 +1,7 @@
 CC = g++
 BUILD_DIR = build
 SRC_DIR = src
-# MAIN_MAP = map
-# MAIN_REDUCE = reduce
-#INCLUDE_DIR = includes
-CFLAGS = -std=c++17 #-I$(INCLUDE_DIR)
+CFLAGS = -std=c++17
 
 MAIN_EXECUTABLE_FILE = main.out
 REDUCE_EXECUTABLE_FILE = reduce.out
@@ -47,9 +44,5 @@ $(REDUCE_EXECUTABLE_FILE): $(REDUCE_OBJECTS)
 	$(CC) $(CFLAGS) $(REDUCE_OBJECTS) -o $(REDUCE_EXECUTABLE_FILE)
 
 .PHONY: clean
-# clean:
-# 	rm -rf $(BUILD_DIR) *.o *.out \
-# 	rmdir -rf systems \
-# 	rmdir -rf pipes/*
 clean:
 	rm -rf $(BUILD_DIR) *.o *.out

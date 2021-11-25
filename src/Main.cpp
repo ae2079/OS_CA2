@@ -4,10 +4,8 @@
 #include <unistd.h>
 #include <vector>
 #include <dirent.h>
-///////////////
 #include <fstream>
 #include <iostream>
-/////////////
 
 #define BUFFER_SIZE 25
 #define OUTPUT_SIZE 100000
@@ -39,15 +37,11 @@ int get_num_of_files(){
 }
 
 int main() {
-    //char write msg[BUFFER SIZE] = "Greetings";
-    //char read msg[BUFFER SIZE];
-    //pid_t pid;
-    /* create the pipe */
     int num_of_files = get_num_of_files();
 
-    //vector<pid_t> pid;
     for(int i = 0; i < num_of_files; i++){
         int fd[2];
+        /* create the pipe */
         if ( pipe (fd) == -1) {
             perror("Pipe failed");
             return -1;
@@ -59,9 +53,7 @@ int main() {
             return -1;
         }
         else if (temp == 0) { /* child process */
-            ///
             sleep(i);
-            ////
             char read_end[BUFFER_SIZE];
             sprintf(read_end, "%d", fd[READ_END]);
             char write_end[BUFFER_SIZE];
@@ -77,11 +69,11 @@ int main() {
             write(fd[WRITE_END], file, strlen(file)+1);
             /* close the write end of the pipe */
             close(fd[WRITE_END]);
-            //sleep(NULL);
         }
     }
 
     int fd[2];
+    /* create the pipe */
     if ( pipe (fd) == -1) {
         perror("Pipe failed");
         return -1;
@@ -114,28 +106,5 @@ int main() {
         execlp ("./reduce.out", read_end, write_end, named_pipe, num_of_maps, NULL);
     }
 
-    // /* fork a child process */
-    // pid = fork();
-    // if (pid < 0) { /* error occurred */
-    //     fprintf(stderr, "Fork Failed");
-    //     return 1;
-    // }
-    // if (pid > 0) { /* parent process */
-    //     /* close the unused end of the pipe */
-    //     close(fd[READ END]);
-    //     /* write to the pipe */
-    //     write(fd[WRITE END], write msg, strlen(write msg)+1);
-    //     /* close the write end of the pipe */
-    //     close(fd[WRITE END]);
-    // }
-    // else { /* child process */
-    //     /* close the unused end of the pipe */
-    //     close(fd[WRITE END]);
-    //     /* read from the pipe */
-    //     read(fd[READ END], read msg, BUFFER SIZE);
-    //     printf("read %s",read msg);
-    // }
-    // /* close the read end of the pipe */
-    // close(fd[READ END]);
     return 0;
 }
